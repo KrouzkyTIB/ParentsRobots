@@ -2085,7 +2085,7 @@
     (property "Reference" "J2" (id 0) (at 145.542 135.0553 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "Screw_Terminal_01x02" (id 1) (at 145.542 137.5922 90)
+    (property "Value" "POWER_INPUT" (id 1) (at 145.542 137.5922 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "TerminalBlock:TerminalBlock_Altech_AK300-2_P5.00mm" (id 2) (at 140.97 135.89 0)
@@ -2932,7 +2932,7 @@
       (reference "J1") (unit 1) (value "Front_LEDs") (footprint "Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical")
     )
     (path "/3b9cb5ba-c1b2-45d6-95bc-60e5bf9b9564"
-      (reference "J2") (unit 1) (value "Screw_Terminal_01x02") (footprint "TerminalBlock:TerminalBlock_Altech_AK300-2_P5.00mm")
+      (reference "J2") (unit 1) (value "POWER_INPUT") (footprint "TerminalBlock:TerminalBlock_Altech_AK300-2_P5.00mm")
     )
     (path "/4500fcf3-cdd5-4b5a-aae6-530638779d64"
       (reference "J3") (unit 1) (value "UART_BOOT") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical")
