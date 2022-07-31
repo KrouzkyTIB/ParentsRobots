@@ -1,0 +1,60 @@
+.speedSlider {
+    /*margin: auto;*/
+    background: transparent;
+    width: 40px;
+    height: 100%;
+}
+
+.speedSliderTrack {
+    /* Top value to align your track to the center of your thumb */
+    right: 18px;
+    /* thickness of the track */
+    width: 4px;
+    /* default color of your track */
+    background: lightblue;
+}
+
+.speedSliderTrack.speedSliderTrack-0 {
+    /* color of the track before the thumb */
+    background: lightblue;
+}
+
+.speedSliderThumb {
+    cursor: pointer;
+    /*color for the thumb */
+    background: gray;
+    /* shape of the thumb: circle */
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    /* remove default outline when selected */
+    outline: none;
+}
+
+.speedSliderThumb:hover {
+    box-shadow: 0 0 0 8px lightgray;
+}
+
+.sliderDiv {
+    height: 100%;
+    width: 50%;
+    display: inline-flex;
+    align-items: center;
+
+}
+
+.right{
+    justify-content: end;
+}
+
+.left{
+    justify-content: start;
+}
+
+.speedSlider.right{
+    margin-right: 5%;
+}
+
+.speedSlider.left{
+    margin-left: 5%;
+}
