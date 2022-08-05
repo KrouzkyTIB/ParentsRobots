@@ -1,15 +1,14 @@
 import React from 'react';
 import './App.css';
-import './SpeedSlider/Slider.css'
-import Slider, {Position} from "./SpeedSlider/Slider";
+import MovementHandler from "./classes/MovementHandler";
 
 function App() {
     return (
         <div className="App">
             <header className="App-header">
             </header>
-            <Slider refreshCallback={(value: number) => console.log("left" + value)} position={Position.LEFT}/>
-            <Slider refreshCallback={(value: number) => console.log("right" + value)} position={Position.RIGHT}/>
+            <MovementHandler moveCallback={() => {
+            }}/>
         </div>
     );
 }
