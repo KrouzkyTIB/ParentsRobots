@@ -1,5 +1,5 @@
 import {Component} from "react";
-
+import "../stylesheets/LightsButton.css";
 
 enum LightsStatus {
     ON = 1,
@@ -28,9 +28,9 @@ class LightsButton extends Component<ButtonProps, LightsState> {
 
     private handleButtonText() {
         if (this.state.turnOn === LightsStatus.ON) {
-            return "Lights ON"
+            return "Lights\nON"
         }
-        return "Lights OFF"
+        return "Lights\nOFF"
     }
 
     private handleClick() {
