@@ -1,6 +1,7 @@
 import {Joystick} from 'react-joystick-component';
 import {Component} from "react";
 import {IJoystickUpdateEvent} from "react-joystick-component/build/lib/Joystick";
+import "../stylesheets/MovementHandler.css"
 
 type MovementCallback = {
     moveCallback: (state: MoveStats) => void
@@ -56,17 +57,18 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
 
     render() {
         return (
-            <Joystick
-                size={200}
-                sticky={false}
-                baseColor="lightgray"
-                stickColor="gray"
-                move={this.handleJoystickMovement.bind(this)}
-                stop={this.handleStop.bind(this)}
-            ></Joystick>
-
+            <div className="joystick-wrapper">
+                <Joystick
+                    size={200}
+                    sticky={false}
+                    baseColor="lightgray"
+                    stickColor="gray"
+                    move={this.handleJoystickMovement.bind(this)}
+                    stop={this.handleStop.bind(this)}
+                    followCursor={false}
+                ></Joystick>
+            </div>
         );
-
     }
 }
 
