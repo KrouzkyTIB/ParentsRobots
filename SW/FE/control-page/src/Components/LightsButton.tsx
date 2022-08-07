@@ -1,17 +1,13 @@
 import {Component} from "react";
 import "../stylesheets/LightsButton.css";
 
-enum LightsStatus {
-    ON = 1,
-    OFF = 0
-}
 
 type LightsState = {
-    turnOn: LightsStatus
+    lightsOn: boolean
 }
 
 type ButtonProps = {
-    lightsChangeHandler: (status: LightsState) => void
+    lightsChangeHandler: (lightsOn: boolean) => void
 }
 
 
@@ -20,39 +16,24 @@ class LightsButton extends Component<ButtonProps, LightsState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            turnOn: LightsStatus.OFF
+            lightsOn: false
         }
-        console.debug("constructor", this.state.turnOn)
     }
 
 
     private handleButtonText() {
-        if (this.state.turnOn === LightsStatus.ON) {
-            return "Lights\nON"
-        }
-        return "Lights\nOFF"
+        return this.state.lightsOn ? "Lights\nON" : "Lights\nOFF"
     }
 
     private handleClick() {
-        if (this.state.turnOn === LightsStatus.ON) {
-            this.setState({
-                turnOn: LightsStatus.OFF
-            })
-        } else {
-            this.setState(
-                {
-                    turnOn: LightsStatus.ON
-                }
-            )
-        }
-        this.props.lightsChangeHandler(this.state)
+        this.setState({
+            lightsOn: !this.state.lightsOn
+        });
+        this.props.lightsChangeHandler(this.state.lightsOn);
     }
 
     private handleClassChange() {
-        if (this.state.turnOn === LightsStatus.ON) {
-            return "lights-on"
-        }
-        return "lights-off"
+        return this.state.lightsOn ? "lights-on" : "lights-off";
     }
 
     render() {

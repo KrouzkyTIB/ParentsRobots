@@ -7,7 +7,7 @@ type MovementCallback = {
     moveCallback: (state: MoveStats) => void
 }
 
-type MoveStats = {
+export type MoveStats = {
     x: number
     y: number
     powerLeft: number
@@ -59,10 +59,10 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
         return (
             <div className="joystick-wrapper">
                 <Joystick
-                    size={200}
+                    size={150}
                     sticky={false}
-                    baseColor="lightgray"
-                    stickColor="gray"
+                    baseColor="gray"
+                    stickColor="darkgray"
                     move={this.handleJoystickMovement.bind(this)}
                     stop={this.handleStop.bind(this)}
                     followCursor={false}
