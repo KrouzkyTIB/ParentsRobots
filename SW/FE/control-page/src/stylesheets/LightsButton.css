@@ -6,6 +6,7 @@
     height: 150px;
     border-radius: 30%;
     border-width: 3px;
+    transform: rotate(90deg);
 }
 
 .lights-on{
