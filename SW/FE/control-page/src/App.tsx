@@ -2,26 +2,35 @@ import React, {Component} from 'react';
 import './App.css';
 import MovementHandler from "./Components/MovementHandler";
 import LightsButton from "./Components/LightsButton"
-import ConnectionStatus from "./Components/ConnectionStatus";
 import ConnectionManager from "./Connection/ConnectionManager";
 
+type ApplicationState = {
+    connectionManager: ConnectionManager
+    connected: boolean
+    _intervalID: NodeJS.Timer | null
+}
 
 
+class App extends Component<{}, ApplicationState> {
 
+    constructor(props: {}) {
+        super(props)
+        this.state = {
+            connected: true,
+            connectionManager: ConnectionManager.getInstance(),
+            _intervalID: null
+        }
+    }
 
-
-class App extends Component<any, any> {
     render() {
-        const connectionManager = new ConnectionManager();
-
-
         return (
             <div className="App">
                 <header className="App-header">
                 </header>
-                <LightsButton lightsChangeHandler={connectionManager.refreshLightsStatus}/>
-                <ConnectionStatus connected={true}/>
-                <MovementHandler moveCallback={connectionManager.refreshPowerSettings}/>
+                <LightsButton lightsChangeHandler={(lightsOn: boolean) => {
+                    this.state.connectionManager.lightsOn = lightsOn
+                }}/>
+                <MovementHandler moveCallback={this.state.connectionManager.refreshPowerSettings.bind(this.state.connectionManager)}/>
             </div>
         );
     }

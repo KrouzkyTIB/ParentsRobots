@@ -24,8 +24,8 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
             y: event.y!,
             powerLeft: this.calculateLeftMotorPower(event.x!, event.y!, event.distance!),
             powerRight: this.calculateRightMotorPower(event.x!, event.y!, event.distance!)
-        })
-        this.props.moveCallback(this.state)
+        }, () => this.props.moveCallback(this.state))
+
     }
 
     private calculateLeftMotorPower(x: number, y: number, distance: number): number {
@@ -50,8 +50,8 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
             y: 0,
             powerLeft: 0,
             powerRight: 0
-        })
-        this.props.moveCallback(this.state)
+        }, () => this.props.moveCallback(this.state))
+
     }
 
 

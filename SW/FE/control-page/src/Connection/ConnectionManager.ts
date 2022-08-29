@@ -3,37 +3,69 @@ import axios from "axios";
 import {ControlData} from "./DataModel/ControlData";
 
 class ConnectionManager {
-    private readonly IP_ADDRESS = "10.0.0.10";
-    private readonly MAX_RETIRES = 10;
+    private static readonly COMMAND_PATH = "/command";
+    static readonly INTERVAL = 1000; // interval in millis
     private _leftMotorPower: number;
     private _rightMotorPower: number;
     private _lightsOn: boolean;
+    private readonly _intervalID: NodeJS.Timer;
+    private static _instance: ConnectionManager | null = null;
 
-    constructor() {
+    private constructor() {
         this._leftMotorPower = 0;
         this._rightMotorPower = 0;
         this._lightsOn = false;
-
+        this._intervalID = setInterval(this.sendDataToRobot, ConnectionManager.INTERVAL);
     }
+
+    public static getInstance(): ConnectionManager {
+        if (this._instance === null) {
+            this._instance = new ConnectionManager()
+        }
+        return this._instance
+    }
+
 
     public refreshPowerSettings(settings: MoveStats) {
         this._leftMotorPower = settings.powerLeft
         this._rightMotorPower = settings.powerRight
     }
 
-    public refreshLightsStatus(lightsOn: boolean) {
-        this._lightsOn = lightsOn
+
+    set lightsOn(value: boolean) {
+        this._lightsOn = value;
     }
 
     private async sendDataToRobot() {
+        console.log("bruh")
         const response = await axios.post(
-            this.IP_ADDRESS,
-            JSON.stringify(new ControlData(this._leftMotorPower, this._rightMotorPower, this._lightsOn))
+            ConnectionManager.COMMAND_PATH,
+            new ControlData(this._leftMotorPower, this._rightMotorPower, this._lightsOn),
+            {url: "http://10.0.0.10"}
         )
-        console.debug(response)
+
+        console.log(response)
+        if (response.status !== 200) {
+            throw new Error("Bad request code from source " + response)
+        }
     }
 
 
+    get lightsOn(): boolean {
+        return this._lightsOn;
+    }
+
+    get intervalID(): NodeJS.Timer {
+        return this._intervalID;
+    }
+
+    private set leftMotorPower(value: number) {
+        this._leftMotorPower = value;
+    }
+
+    private set rightMotorPower(value: number) {
+        this._rightMotorPower = value;
+    }
 }
 
 export default ConnectionManager;
