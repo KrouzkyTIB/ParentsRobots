@@ -3,11 +3,12 @@
 //
 
 #include "ServerHandler.h"
-#include <HTTPSServer.hpp>
 
 #define MAX_CONNECTED_DEVICES 1
 #define SHOW_SSID 0
 #define HTTP_PORT 80
+#define USER_PATH "/"
+#define DATA_PATH "/command"
 using namespace std::placeholders;
 
 
@@ -33,24 +34,31 @@ void ServerHandler::init(uint8_t ssidIndex) {
     this->channel = ssidIndex;
     WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, MAX_CONNECTED_DEVICES);
     WiFi.softAPConfig(localIp, gateway, subnet);
-    this->server = new httpsserver::HTTPServer(HTTP_PORT, MAX_CONNECTED_DEVICES, 0);
-    this->server->start();
+    this->server = new AsyncWebServer(HTTP_PORT);
     Serial.println(WiFi.softAPIP());
+    this->server->begin();
+    this->server->onRequestBody(handleDataRequest);
+
 }
 
-
-
-void ServerHandler::addCallHandler(ResourceNode *nodeRoot) {
-    this->server->registerNode(nodeRoot);
+void ServerHandler::addCallHandler(const char *path,
+                                   WebRequestMethodComposite method,
+                                   void (*callback)(AsyncWebServerRequest *request)) {
+    server->on(path, method, callback);
 }
 
-bool ServerHandler::isServerRunning() {
-    return this->server->isRunning();
+void ServerHandler::handleDataRequest(AsyncWebServerRequest *request,
+                                      uint8_t *data,
+                                      size_t len,
+                                      size_t index,
+                                      size_t total) {
+    if (request->method() == HTTP_POST && request->url() == DATA_PATH) {
+        Serial.println((char *) data);
+    }
+
+
 }
 
-void ServerHandler::handleClients() {
-    this->server->loop();
-}
 
 
 

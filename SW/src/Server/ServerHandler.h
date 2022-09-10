@@ -8,12 +8,7 @@
 
 #include "Arduino.h"
 #include <WiFi.h>
-#include <HTTPSServer.hpp>
-#include <HTTPRequest.hpp>
-#include <HTTPResponse.hpp>
-#include "SSLCert.hpp"
-
-using namespace httpsserver;
+#include "ESPAsyncWebServer.h"
 
 class ServerHandler {
 private:
@@ -23,14 +18,15 @@ private:
     static const IPAddress localIp;
     static const IPAddress gateway;
     static const IPAddress subnet;
-    HTTPServer *server;
+    AsyncWebServer* server;
+
+private:
+    static void handleDataRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
 
 public:
     void init(uint8_t ssidIndex);
-    void addCallHandler(ResourceNode * nodeRoot);
-    bool isServerRunning();
-    void handleClients();
+    void addCallHandler(const char * path, WebRequestMethodComposite method, void (*callback) (AsyncWebServerRequest *request));
 };
 
 #endif //SW_COMMUNICATION_HANDLER_H
