@@ -1,12 +1,13 @@
 import {Joystick} from 'react-joystick-component';
 import {Component} from "react";
 import {IJoystickUpdateEvent} from "react-joystick-component/build/lib/Joystick";
+import "../stylesheets/MovementHandler.css"
 
 type MovementCallback = {
     moveCallback: (state: MoveStats) => void
 }
 
-type MoveStats = {
+export type MoveStats = {
     x: number
     y: number
     powerLeft: number
@@ -23,8 +24,8 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
             y: event.y!,
             powerLeft: this.calculateLeftMotorPower(event.x!, event.y!, event.distance!),
             powerRight: this.calculateRightMotorPower(event.x!, event.y!, event.distance!)
-        })
-        this.props.moveCallback(this.state)
+        }, () => this.props.moveCallback(this.state))
+
     }
 
     private calculateLeftMotorPower(x: number, y: number, distance: number): number {
@@ -49,24 +50,25 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
             y: 0,
             powerLeft: 0,
             powerRight: 0
-        })
-        this.props.moveCallback(this.state)
+        }, () => this.props.moveCallback(this.state))
+
     }
 
 
     render() {
         return (
-            <Joystick
-                size={200}
-                sticky={false}
-                baseColor="lightgray"
-                stickColor="gray"
-                move={this.handleJoystickMovement.bind(this)}
-                stop={this.handleStop.bind(this)}
-            ></Joystick>
-
+            <div className="joystick-wrapper">
+                <Joystick
+                    size={150}
+                    sticky={false}
+                    baseColor="gray"
+                    stickColor="darkgray"
+                    move={this.handleJoystickMovement.bind(this)}
+                    stop={this.handleStop.bind(this)}
+                    followCursor={false}
+                ></Joystick>
+            </div>
         );
-
     }
 }
 

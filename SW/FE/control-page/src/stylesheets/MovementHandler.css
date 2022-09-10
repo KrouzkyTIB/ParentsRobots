@@ -1,0 +1,8 @@
+.joystick-wrapper{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 10%;
+    width: 99vw;
+}
