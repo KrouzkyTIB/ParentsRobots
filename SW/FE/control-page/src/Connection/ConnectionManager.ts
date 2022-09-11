@@ -4,7 +4,7 @@ import {ControlData} from "./DataModel/ControlData";
 
 class ConnectionManager {
     private static readonly COMMAND_PATH = "/command";
-    static readonly INTERVAL = 1000; // interval in millis
+    static readonly INTERVAL = 50; // interval in millis
     private _leftMotorPower: number;
     private _rightMotorPower: number;
     private _lightsOn: boolean;
@@ -37,7 +37,7 @@ class ConnectionManager {
     }
 
     private async sendDataToRobot() {
-        // console.log(Math.trunc(this._leftMotorPower), Math.trunc(this._rightMotorPower), this._lightsOn ? "1" : "0")
+        console.log(Math.trunc(this._leftMotorPower), Math.trunc(this._rightMotorPower), this._lightsOn ? "1" : "0")
 
         const response = await axios.post(
             ConnectionManager.COMMAND_PATH,
