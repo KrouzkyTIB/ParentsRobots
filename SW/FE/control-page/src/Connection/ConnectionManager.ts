@@ -4,7 +4,7 @@ import {ControlData} from "./DataModel/ControlData";
 
 class ConnectionManager {
     private static readonly COMMAND_PATH = "/command";
-    static readonly INTERVAL = 50; // interval in millis
+    static readonly INTERVAL = 500; // interval in millis
     private _leftMotorPower: number;
     private _rightMotorPower: number;
     private _lightsOn: boolean;
