@@ -15,7 +15,7 @@ class ConnectionManager {
         this._leftMotorPower = 0;
         this._rightMotorPower = 0;
         this._lightsOn = false;
-        this._intervalID = setInterval(this.sendDataToRobot, ConnectionManager.INTERVAL);
+        this._intervalID = setInterval(this.sendDataToRobot.bind(this), ConnectionManager.INTERVAL);
     }
 
     public static getInstance(): ConnectionManager {
@@ -37,11 +37,21 @@ class ConnectionManager {
     }
 
     private async sendDataToRobot() {
-        console.log("bruh")
+        // console.log(Math.trunc(this._leftMotorPower), Math.trunc(this._rightMotorPower), this._lightsOn ? "1" : "0")
+
         const response = await axios.post(
             ConnectionManager.COMMAND_PATH,
-            new ControlData(this._leftMotorPower, this._rightMotorPower, this._lightsOn),
-            {url: "http://10.0.0.10"}
+            {
+                leftMotorPower: Math.trunc(this._leftMotorPower),
+                rightMotorPower: Math.trunc(this._rightMotorPower),
+                lightsOn: this._lightsOn ? 1 : 0
+            },
+            {
+                url: "http://10.0.0.10", headers: {
+                    "Content-Type": "application/json"
+                },
+                method: "POST"
+            }
         )
 
         console.log(response)

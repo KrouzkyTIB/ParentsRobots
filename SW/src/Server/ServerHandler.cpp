@@ -2,26 +2,23 @@
 // Created by jiri on 10.9.22.
 //
 
-#include <rtc_wdt.h>
-#include <WebServer.h>
 #include "ServerHandler.h"
 #include "SPIFFS.h"
-#include "FS.h"
 
 #define MAX_CONNECTED_DEVICES 1
 #define SHOW_SSID 0
 #define HTTP_PORT 80
 #define USER_PATH "/"
-#define DATA_PATH "/command"
 #define BUNDLE_JS_PATH "/bundle.js"
+#define DATA_PATH "/command"
 using namespace std::placeholders;
-WebServer server(80);
 
 const IPAddress ServerHandler::localIp(10, 0, 0, 10);
 const IPAddress ServerHandler::gateway(192, 168, 1, 1);
 const IPAddress ServerHandler::subnet(255, 255, 255, 0);
 String ServerHandler::bundleJs = "";
 String ServerHandler::indexHtml = "";
+WebServer ServerHandler::server(HTTP_PORT);
 
 const std::string ServerHandler::ssidNames[NUMBER_OF_SSIDS] = {"Car0",
                                                                "Car1",
@@ -40,16 +37,16 @@ void ServerHandler::init(uint8_t ssidIndex) {
     if (!SPIFFS.begin()) {
         throw std::runtime_error("SPIFFS is not running!");
     }
-
     readString("/index.html", &ServerHandler::indexHtml);
     readString("/bundle.js.gz", &ServerHandler::bundleJs);
     this->ssid = ssidNames[ssidIndex];
     this->channel = ssidIndex;
-    WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, 4);
+    WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, MAX_CONNECTED_DEVICES);
     WiFi.softAPConfig(localIp, gateway, subnet);
     Serial.println(WiFi.softAPIP());
     server.on(USER_PATH, ServerHandler::handleIndexHTMLServe);
     server.on(BUNDLE_JS_PATH, ServerHandler::handleBundleJsServe);
+    server.on(DATA_PATH, ServerHandler::handleData);
     server.begin();
 }
 
@@ -73,6 +70,18 @@ void ServerHandler::readString(const String filename, String *buffer) {
     }
     f.close();
 }
+
+void ServerHandler::handleData() {
+    for (int i = 0; i < server.args(); i++){
+        Serial.print(server.argName(i));
+        Serial.print(" : ");
+        Serial.println(server.arg(i));
+    }
+
+    server.send(200, "text/plain", "OK");
+}
+
+
 
 
 

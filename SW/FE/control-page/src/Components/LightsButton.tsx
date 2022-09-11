@@ -28,8 +28,10 @@ class LightsButton extends Component<ButtonProps, LightsState> {
     private handleClick() {
         this.setState({
             lightsOn: !this.state.lightsOn
+        }, () => {
+            this.props.lightsChangeHandler(this.state.lightsOn);
         });
-        this.props.lightsChangeHandler(this.state.lightsOn);
+
     }
 
     private handleClassChange() {

@@ -39,6 +39,8 @@ module.exports = {
                 compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
                     const filePath = outputDirPath + "/" + "bundle.js.LICENSE.txt"
                     fs.rmSync(filePath)
+                    // fs.rmSync(outputDirPath + "/" + "bundle.js")
+                    // fs.rmSync(outputDirPath + "/" + "bundle.js.LICENSE.txt.gz")
                     if (fs.existsSync(filePath)){
                         console.log(outputDirPath + " removed")
                     }else{

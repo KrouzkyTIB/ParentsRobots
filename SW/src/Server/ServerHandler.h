@@ -8,7 +8,7 @@
 
 #include "Arduino.h"
 #include <WiFi.h>
-#include "ESPAsyncWebServer.h"
+#include <WebServer.h>
 
 class ServerHandler {
 private:
@@ -20,17 +20,17 @@ private:
     static const IPAddress subnet;
     static String bundleJs;
     static String indexHtml;
+    static WebServer server;
 
 private:
-    static void handleDataRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     static void handleIndexHTMLServe();
     static void handleBundleJsServe();
-    static void readString(const String filename, String * buffer);
+    static void readString(String filename, String * buffer);
+    static void handleData();
 
 public:
     void init(uint8_t ssidIndex);
     void handleClient();
-
 };
 
 #endif //SW_COMMUNICATION_HANDLER_H
