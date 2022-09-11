@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require("fs")
 const {getCompiler} = require("ts-loader/dist/compilerSetup");
 const outputDirPath = path.resolve(__dirname, "../../data")
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     entry: './src/index.tsx',
@@ -32,6 +33,7 @@ module.exports = {
         path: outputDirPath
     },
     plugins: [
+        new CompressionPlugin(),
         {
             apply: (compiler) => {
                 compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {

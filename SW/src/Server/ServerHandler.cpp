@@ -42,7 +42,7 @@ void ServerHandler::init(uint8_t ssidIndex) {
     }
 
     readString("/index.html", &ServerHandler::indexHtml);
-    readString("/bundle.js", &ServerHandler::bundleJs);
+    readString("/bundle.js.gz", &ServerHandler::bundleJs);
     this->ssid = ssidNames[ssidIndex];
     this->channel = ssidIndex;
     WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, 4);
@@ -62,6 +62,7 @@ void ServerHandler::handleIndexHTMLServe() {
 
 void ServerHandler::handleBundleJsServe() {
     Serial.println(ServerHandler::bundleJs.length());
+    server.sendHeader("Content-Encoding","gzip");
     server.send(200, "text/javascript", ServerHandler::bundleJs);
 }
 
