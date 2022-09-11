@@ -48,21 +48,17 @@ void ServerHandler::init(uint8_t ssidIndex) {
     WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, 4);
     WiFi.softAPConfig(localIp, gateway, subnet);
     Serial.println(WiFi.softAPIP());
-    server.on(USER_PATH, [] {
-        server.send(200, "text/html", ServerHandler::indexHtml);
-    });
-    server.on(BUNDLE_JS_PATH, handleBundleJsServe);
+    server.on(USER_PATH, ServerHandler::handleIndexHTMLServe);
+    server.on(BUNDLE_JS_PATH, ServerHandler::handleBundleJsServe);
     server.begin();
 }
 
 void ServerHandler::handleIndexHTMLServe() {
-    Serial.println(ServerHandler::indexHtml.length());
     server.send(200, "text/html", ServerHandler::indexHtml);
 }
 
 void ServerHandler::handleBundleJsServe() {
-    Serial.println(ServerHandler::bundleJs.length());
-    server.sendHeader("Content-Encoding","gzip");
+    server.sendHeader("Content-Encoding", "gzip");
     server.send(200, "text/javascript", ServerHandler::bundleJs);
 }
 
@@ -72,8 +68,7 @@ void ServerHandler::handleClient() {
 
 void ServerHandler::readString(const String filename, String *buffer) {
     File f = SPIFFS.open(filename);
-    for (int i = 0; f.peek() != EOF; i++) {
-        Serial.println(f.available());
+    while (f.peek() != EOF) {
         buffer->concat((char) f.read());
     }
     f.close();
