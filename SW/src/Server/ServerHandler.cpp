@@ -4,6 +4,7 @@
 
 #include "ServerHandler.h"
 #include "SPIFFS.h"
+#include <ArduinoJson.h>
 
 #define MAX_CONNECTED_DEVICES 1
 #define SHOW_SSID 0
@@ -11,7 +12,11 @@
 #define USER_PATH "/"
 #define BUNDLE_JS_PATH "/bundle.js"
 #define DATA_PATH "/command"
-using namespace std::placeholders;
+#define BODY_ARG_NAME "plain"
+#define MAGIC_BUFFER_CONSTANT 4
+#define RIGHT_MOTOR_POWER "rightMotorPower"
+#define LEFT_MOTOR_POWER "leftMotorPower"
+#define LIGHTS_ON "lightsOn"
 
 const IPAddress ServerHandler::localIp(10, 0, 0, 10);
 const IPAddress ServerHandler::gateway(192, 168, 1, 1);
@@ -19,6 +24,7 @@ const IPAddress ServerHandler::subnet(255, 255, 255, 0);
 String ServerHandler::bundleJs = "";
 String ServerHandler::indexHtml = "";
 WebServer ServerHandler::server(HTTP_PORT);
+
 
 const std::string ServerHandler::ssidNames[NUMBER_OF_SSIDS] = {"Car0",
                                                                "Car1",
@@ -72,11 +78,13 @@ void ServerHandler::readString(const String filename, String *buffer) {
 }
 
 void ServerHandler::handleData() {
-    for (int i = 0; i < server.args(); i++){
-        Serial.print(server.argName(i));
-        Serial.print(" : ");
-        Serial.println(server.arg(i));
-    }
+    String payload = server.arg(BODY_ARG_NAME);
+    DynamicJsonDocument jsonDocument(payload.length() * MAGIC_BUFFER_CONSTANT);
+    ArduinoJson6194_F1::deserializeJson(jsonDocument, payload);
+    JsonObject parsedJson = jsonDocument.as<JsonObject>();
+    int rightSpeed = parsedJson[RIGHT_MOTOR_POWER];
+    int leftSpeed = parsedJson[LEFT_MOTOR_POWER];
+    bool lightsON = parsedJson[LIGHTS_ON];
 
     server.send(200, "text/plain", "OK");
 }
