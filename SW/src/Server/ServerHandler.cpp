@@ -5,6 +5,7 @@
 #include "ServerHandler.h"
 #include "SPIFFS.h"
 #include <ArduinoJson.h>
+#include "../Data/FrontEndData.h"
 
 #define MAX_CONNECTED_DEVICES 1
 #define SHOW_SSID 0
@@ -82,10 +83,13 @@ void ServerHandler::handleData() {
     DynamicJsonDocument jsonDocument(payload.length() * MAGIC_BUFFER_CONSTANT);
     ArduinoJson6194_F1::deserializeJson(jsonDocument, payload);
     JsonObject parsedJson = jsonDocument.as<JsonObject>();
-    int rightSpeed = parsedJson[RIGHT_MOTOR_POWER];
-    int leftSpeed = parsedJson[LEFT_MOTOR_POWER];
+    int8_t rightSpeed = parsedJson[RIGHT_MOTOR_POWER];
+    int8_t leftSpeed = parsedJson[LEFT_MOTOR_POWER];
     bool lightsON = parsedJson[LIGHTS_ON];
-
+    FrontEndData * instance = FrontEndData::getInstance();
+    instance->setLeftMotorPower(leftSpeed);
+    instance->setRightMotorPower(rightSpeed);
+    instance->setLightsOn(lightsON);
     server.send(200, "text/plain", "OK");
 }
 
