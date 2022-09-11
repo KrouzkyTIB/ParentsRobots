@@ -18,15 +18,19 @@ private:
     static const IPAddress localIp;
     static const IPAddress gateway;
     static const IPAddress subnet;
-    AsyncWebServer* server;
+    static String bundleJs;
+    static String indexHtml;
 
 private:
     static void handleDataRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
-
+    static void handleIndexHTMLServe();
+    static void handleBundleJsServe();
+    static void readString(const String filename, String * buffer);
 
 public:
     void init(uint8_t ssidIndex);
-    void addCallHandler(const char * path, WebRequestMethodComposite method, void (*callback) (AsyncWebServerRequest *request));
+    void handleClient();
+
 };
 
 #endif //SW_COMMUNICATION_HANDLER_H

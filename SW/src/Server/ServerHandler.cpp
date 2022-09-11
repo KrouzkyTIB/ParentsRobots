@@ -2,19 +2,26 @@
 // Created by jiri on 10.9.22.
 //
 
+#include <rtc_wdt.h>
+#include <WebServer.h>
 #include "ServerHandler.h"
+#include "SPIFFS.h"
+#include "FS.h"
 
 #define MAX_CONNECTED_DEVICES 1
 #define SHOW_SSID 0
 #define HTTP_PORT 80
 #define USER_PATH "/"
 #define DATA_PATH "/command"
+#define BUNDLE_JS_PATH "/bundle.js"
 using namespace std::placeholders;
-
+WebServer server(80);
 
 const IPAddress ServerHandler::localIp(10, 0, 0, 10);
 const IPAddress ServerHandler::gateway(192, 168, 1, 1);
 const IPAddress ServerHandler::subnet(255, 255, 255, 0);
+String ServerHandler::bundleJs = "";
+String ServerHandler::indexHtml = "";
 
 const std::string ServerHandler::ssidNames[NUMBER_OF_SSIDS] = {"Car0",
                                                                "Car1",
@@ -30,34 +37,47 @@ void ServerHandler::init(uint8_t ssidIndex) {
     if (ssidIndex >= NUMBER_OF_SSIDS) {
         throw std::range_error("Index out of bound exception");
     }
-    this->ssid = ssidNames[ssidIndex];
-    this->channel = ssidIndex;
-    WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, MAX_CONNECTED_DEVICES);
-    WiFi.softAPConfig(localIp, gateway, subnet);
-    this->server = new AsyncWebServer(HTTP_PORT);
-    Serial.println(WiFi.softAPIP());
-    this->server->begin();
-    this->server->onRequestBody(handleDataRequest);
-
-}
-
-void ServerHandler::addCallHandler(const char *path,
-                                   WebRequestMethodComposite method,
-                                   void (*callback)(AsyncWebServerRequest *request)) {
-    server->on(path, method, callback);
-}
-
-void ServerHandler::handleDataRequest(AsyncWebServerRequest *request,
-                                      uint8_t *data,
-                                      size_t len,
-                                      size_t index,
-                                      size_t total) {
-    if (request->method() == HTTP_POST && request->url() == DATA_PATH) {
-        Serial.println((char *) data);
+    if (!SPIFFS.begin()) {
+        throw std::runtime_error("SPIFFS is not running!");
     }
 
-
+    readString("/index.html", &ServerHandler::indexHtml);
+    readString("/bundle.js", &ServerHandler::bundleJs);
+    this->ssid = ssidNames[ssidIndex];
+    this->channel = ssidIndex;
+    WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, 4);
+    WiFi.softAPConfig(localIp, gateway, subnet);
+    Serial.println(WiFi.softAPIP());
+    server.on(USER_PATH, [] {
+        server.send(200, "text/html", ServerHandler::indexHtml);
+    });
+    server.on(BUNDLE_JS_PATH, handleBundleJsServe);
+    server.begin();
 }
+
+void ServerHandler::handleIndexHTMLServe() {
+    Serial.println(ServerHandler::indexHtml.length());
+    server.send(200, "text/html", ServerHandler::indexHtml);
+}
+
+void ServerHandler::handleBundleJsServe() {
+    Serial.println(ServerHandler::bundleJs.length());
+    server.send(200, "text/javascript", ServerHandler::bundleJs);
+}
+
+void ServerHandler::handleClient() {
+    server.handleClient();
+}
+
+void ServerHandler::readString(const String filename, String *buffer) {
+    File f = SPIFFS.open(filename);
+    for (int i = 0; f.peek() != EOF; i++) {
+        Serial.println(f.available());
+        buffer->concat((char) f.read());
+    }
+    f.close();
+}
+
 
 
 
