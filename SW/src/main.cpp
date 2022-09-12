@@ -15,6 +15,8 @@ void setup() {
     leftMotor.init();
     Serial.begin(115200);
     serverHandler.init(readWifiChannelSettings());
+    pinMode(READY_LED, OUTPUT);
+    digitalWrite(READY_LED, HIGH);
 }
 
 void loop() {
