@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <soc/rtc_cntl_reg.h>
 #include "Drivers/Motor.h"
 #include "PinDefinitions.h"
 #include "Server/ServerHandler.h"
@@ -11,6 +12,7 @@ ServerHandler serverHandler;
 uint8_t readWifiChannelSettings();
 
 void setup() {
+    WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
     rightMotor.init();
     leftMotor.init();
     Serial.begin(115200);

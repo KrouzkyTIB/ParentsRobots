@@ -47,7 +47,6 @@ void Motor::setSpeed(int8_t newSpeed) {
         digitalWrite(backwardsPin, HIGH);
     }
     uint32_t newPwmValue = map(abs(speed), MIN_SPEED, MAX_SPEED, 0, MAX_PWM);
-    Serial.println(newPwmValue);
     ledcWrite(pwmChannel, newPwmValue);
 }
 

@@ -19,7 +19,7 @@
 #define LEFT_MOTOR_POWER "leftMotorPower"
 #define LIGHTS_ON "lightsOn"
 
-const IPAddress ServerHandler::localIp(10, 0, 0, 10);
+const IPAddress ServerHandler::localIp(192, 168, 1, 10);
 const IPAddress ServerHandler::gateway(192, 168, 1, 1);
 const IPAddress ServerHandler::subnet(255, 255, 255, 0);
 String ServerHandler::bundleJs = "";
@@ -50,7 +50,6 @@ void ServerHandler::init(uint8_t ssidIndex) {
     this->channel = ssidIndex;
     WiFi.softAP(this->ssid.c_str(), nullptr, channel, SHOW_SSID, MAX_CONNECTED_DEVICES);
     WiFi.softAPConfig(localIp, gateway, subnet);
-    Serial.println(WiFi.softAPIP());
     server.on(USER_PATH, ServerHandler::handleIndexHTMLServe);
     server.on(BUNDLE_JS_PATH, ServerHandler::handleBundleJsServe);
     server.on(DATA_PATH, ServerHandler::handleData);
@@ -81,7 +80,7 @@ void ServerHandler::readString(const String filename, String *buffer) {
 void ServerHandler::handleData() {
     String payload = server.arg(BODY_ARG_NAME);
     DynamicJsonDocument jsonDocument(payload.length() * MAGIC_BUFFER_CONSTANT);
-    ArduinoJson6194_F1::deserializeJson(jsonDocument, payload);
+    ArduinoJson::deserializeJson(jsonDocument, payload);
     JsonObject parsedJson = jsonDocument.as<JsonObject>();
     int8_t rightSpeed = parsedJson[RIGHT_MOTOR_POWER];
     int8_t leftSpeed = parsedJson[LEFT_MOTOR_POWER];
