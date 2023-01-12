@@ -5,6 +5,7 @@
 #include "Server/ServerHandler.h"
 #include "Data/FrontEndData.h"
 
+#define READY_BLINKING 5
 Motor rightMotor(RIGHT_FORWARDS_PIN, RIGHT_BACKWARDS_PIN, RIGHT_SPEED_PIN);
 Motor leftMotor(LEFT_FORWARDS_PIN, LEFT_BACKWARDS_PIN, LEFT_SPEED_PIN);
 ServerHandler serverHandler;
@@ -12,13 +13,22 @@ ServerHandler serverHandler;
 uint8_t readWifiChannelSettings();
 
 void setup() {
+    pinMode(READY_LED, OUTPUT);
+    pinMode(FRONT_LED, OUTPUT);
+    digitalWrite(FRONT_LED, LOW);
+    digitalWrite(READY_LED, LOW);
     WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
     rightMotor.init();
     leftMotor.init();
     Serial.begin(115200);
     serverHandler.init(readWifiChannelSettings());
-    pinMode(READY_LED, OUTPUT);
     digitalWrite(READY_LED, HIGH);
+    for (int i = 0; i < READY_BLINKING; ++i) {
+        digitalWrite(FRONT_LED, HIGH);
+        delay(100);
+        digitalWrite(FRONT_LED, LOW);
+        delay(100);
+    }
 }
 
 void loop() {
@@ -27,6 +37,7 @@ void loop() {
     FrontEndData *data = FrontEndData::getInstance();
     rightMotor.setSpeed(data->getRightMotorPower());
     leftMotor.setSpeed(data->getLeftMotorPower());
+    digitalWrite(FRONT_LED, data->isLightsOn());
 }
 
 
