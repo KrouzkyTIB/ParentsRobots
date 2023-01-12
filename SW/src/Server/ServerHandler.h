@@ -8,12 +8,7 @@
 
 #include "Arduino.h"
 #include <WiFi.h>
-#include <HTTPSServer.hpp>
-#include <HTTPRequest.hpp>
-#include <HTTPResponse.hpp>
-#include "SSLCert.hpp"
-
-using namespace httpsserver;
+#include <WebServer.h>
 
 class ServerHandler {
 private:
@@ -23,14 +18,19 @@ private:
     static const IPAddress localIp;
     static const IPAddress gateway;
     static const IPAddress subnet;
-    HTTPServer *server;
+    static String bundleJs;
+    static String indexHtml;
+    static WebServer server;
 
+private:
+    static void handleIndexHTMLServe();
+    static void handleBundleJsServe();
+    static void readString(String filename, String * buffer);
+    static void handleData();
 
 public:
     void init(uint8_t ssidIndex);
-    void addCallHandler(ResourceNode * nodeRoot);
-    bool isServerRunning();
-    void handleClients();
+    void handleClient();
 };
 
 #endif //SW_COMMUNICATION_HANDLER_H

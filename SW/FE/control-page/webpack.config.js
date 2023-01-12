@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require("fs")
 const {getCompiler} = require("ts-loader/dist/compilerSetup");
 const outputDirPath = path.resolve(__dirname, "../../data")
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     entry: './src/index.tsx',
@@ -32,11 +33,14 @@ module.exports = {
         path: outputDirPath
     },
     plugins: [
+        new CompressionPlugin(),
         {
             apply: (compiler) => {
                 compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
                     const filePath = outputDirPath + "/" + "bundle.js.LICENSE.txt"
                     fs.rmSync(filePath)
+                    fs.rmSync(outputDirPath + "/" + "bundle.js")
+                    fs.rmSync(outputDirPath + "/" + "bundle.js.LICENSE.txt.gz")
                     if (fs.existsSync(filePath)){
                         console.log(outputDirPath + " removed")
                     }else{

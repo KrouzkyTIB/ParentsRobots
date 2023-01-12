@@ -29,22 +29,20 @@ class MovementHandler extends Component<MovementCallback, MoveStats> {
     }
 
     private calculateLeftMotorPower(x: number, y: number, distance: number): number {
-        if (x > 0) {
-            return y >= 0 ? this.MAX_POWER : -this.MAX_POWER
-        }
-        const speed: number = Math.sqrt(Math.pow(distance, 2) - Math.pow(x, 2))
-        return y >= 0 ? speed : -speed
+        const xNormalized = x / 0.75;
+        const yPower = y < 0 ? Math.sqrt(Math.pow(distance, 2) - Math.pow(xNormalized, 2)) : 0;
+        const power = Math.min(Math.abs(xNormalized) + yPower, this.MAX_POWER);
+        return x > 0 ? power : -power;
     }
 
     private calculateRightMotorPower(x: number, y: number, distance: number) {
-        if (x < 0) {
-            return y >= 0 ? this.MAX_POWER : -this.MAX_POWER
-        }
-        const speed: number = Math.sqrt(Math.pow(distance, 2) - Math.pow(x, 2))
-        return y >= 0 ? speed : -speed
+        const xNormalized = x / 0.75;
+        const yPower = y > 0 ? Math.sqrt(Math.pow(distance, 2) - Math.pow(xNormalized, 2)) : 0;
+        const power = Math.min(Math.abs(xNormalized) + yPower, this.MAX_POWER);
+        return x > 0 ? power : -power;
     }
 
-    private handleStop() {
+    handleStop() {
         this.setState({
             x: 0,
             y: 0,
