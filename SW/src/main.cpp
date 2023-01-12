@@ -13,31 +13,12 @@ ServerHandler serverHandler;
 uint8_t readWifiChannelSettings();
 
 void setup() {
-    pinMode(READY_LED, OUTPUT);
-    pinMode(FRONT_LED, OUTPUT);
-    digitalWrite(FRONT_LED, LOW);
-    digitalWrite(READY_LED, LOW);
-    WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
-    rightMotor.init();
-    leftMotor.init();
-    Serial.begin(115200);
-    serverHandler.init(readWifiChannelSettings());
-    digitalWrite(READY_LED, HIGH);
-    for (int i = 0; i < READY_BLINKING; ++i) {
-        digitalWrite(FRONT_LED, HIGH);
-        delay(100);
-        digitalWrite(FRONT_LED, LOW);
-        delay(100);
-    }
+
 }
 
 void loop() {
 // write your code here
-    serverHandler.handleClient();
-    FrontEndData *data = FrontEndData::getInstance();
-    rightMotor.setSpeed(data->getRightMotorPower());
-    leftMotor.setSpeed(data->getLeftMotorPower());
-    digitalWrite(FRONT_LED, data->isLightsOn());
+
 }
 
 
